@@ -24,11 +24,25 @@ unix {
 SOURCES += \
     main.cpp \
     mainwindow.cpp \
-    uiperform.cpp
+    midi.cpp \
+    patch.cpp \
+    uiperform.cpp \
+    value.cpp \
+    vcheckbox.cpp \
+    vcombobox.cpp \
+    vpushbutton.cpp \
+    vspinbox.cpp
 
 HEADERS += \
     mainwindow.h \
-    uiperform.h
+    midi.h \
+    patch.h \
+    uiperform.h \
+    value.h \
+    vcheckbox.h \
+    vcombobox.h \
+    vpushbutton.h \
+    vspinbox.h
 
 FORMS += \
     mainwindow.ui \

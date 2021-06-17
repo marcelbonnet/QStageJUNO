@@ -3,6 +3,7 @@
 
 #include <QGridLayout>
 #include <QDebug>
+#include "midi.h"
 
 UIPerform::UIPerform(QWidget *parent) :
     QWidget(parent),
@@ -81,13 +82,13 @@ void UIPerform::setSlotConnections(bool b){
 }
 
 void UIPerform::onChangeOutput123CR(int){
-    QCheckBox *source = qobject_cast<QCheckBox*>(sender());
+    VCheckBox *source = qobject_cast<VCheckBox*>(sender());
     int index = source->property("index").value<int>();
 
     if (!source->isChecked()) return;
 
     for (short i=0;i<=15;i++) {
-        QCheckBox *ck = (QCheckBox*) parts->at(i)->at(index);
+        VCheckBox *ck = (VCheckBox*) parts->at(i)->at(index);
 
         if(source != ck){
             ck->setChecked(false);
@@ -99,16 +100,27 @@ QList<QWidget*>* UIPerform::makePart(int part){
     QList<QWidget*> *el = new QList<QWidget*>();
 
     QLabel *lblPart = new QLabel(QString::number(part+1));
-    QCheckBox *kbd = new QCheckBox("");
+    VPushButton *kbd = new VPushButton(0x001b, "ON/OFF");
+    kbd->setCheckable(true);
 
-    QComboBox *group = new QComboBox();
-    //TODO lista de grupos e filtrar patches pelo grupo
+    VComboBox *group = new VComboBox(0);
+    for(int i=0; i<39; i++)
+        group->addItem(Patch::CATEGORIES[i]);
 
-    QComboBox *patch = new QComboBox();
-    //TODO patches
+    VComboBox *patch = new VComboBox(0x0004, 0);
+    /*
+     * 5	Pf:005	JUNO Piano 1	PNO	87	64	5	PRESET		PNO
 
-    QCheckBox *solo = new QCheckBox("");
-    QCheckBox *mute = new QCheckBox("");
+     * */
+    Patch *p1 = new Patch("Pf:005","JUNO Piano 1","PNO","PNO",false,87,64,5,"PRESET",true,5);
+    Patch *p2 = new Patch("Wr:075","Flute+1octLS","ETH","ETH",true,87,72,87,"India",true,1111);
+    Patch *p3 = new Patch("Wr:005","Vintage Call","BEL","BEL",true,87,72,101,"India",true,1125);
+    patch->addItem(p1->getPatchFullName(), QVariant::fromValue(p1));
+    patch->addItem(p2->getPatchFullName(), QVariant::fromValue(p2));
+    patch->addItem(p3->getPatchFullName(), QVariant::fromValue(p3));
+
+    VCheckBox *solo = new VCheckBox("");
+    VCheckBox *mute = new VCheckBox("");
     QSpinBox *level = new QSpinBox();
     level->setRange(0,127);
     QSpinBox *pan = new QSpinBox();
@@ -117,7 +129,7 @@ QList<QWidget*>* UIPerform::makePart(int part){
     QSpinBox *rxch = new QSpinBox();
     rxch->setRange(1,16);
     rxch->setValue(part+1);
-    QCheckBox *rxsw = new QCheckBox("");
+    VCheckBox *rxsw = new VCheckBox("");
     rxsw->setChecked(true);
 
     el->append(lblPart);
@@ -133,7 +145,7 @@ QList<QWidget*>* UIPerform::makePart(int part){
 
     // Output
     QLabel *outLblPart = new QLabel(QString::number(part+1));
-    QComboBox *out = new QComboBox();
+    VComboBox *out = new VComboBox();
     out->addItem("MFX",0);
     out->addItem("L+R Mono",1);
     out->addItem("L",5);
@@ -150,11 +162,11 @@ QList<QWidget*>* UIPerform::makePart(int part){
     outReverb->setRange(0,127);
 
     // FIXME: preciso entender isso. Só sei que só pode ter um ativado por vez.
-    QCheckBox *out1 = new QCheckBox("");
-    QCheckBox *out2 = new QCheckBox("");
-    QCheckBox *out3 = new QCheckBox("");
-    QCheckBox *outC = new QCheckBox("");
-    QCheckBox *outR = new QCheckBox("");
+    VCheckBox *out1 = new VCheckBox("");
+    VCheckBox *out2 = new VCheckBox("");
+    VCheckBox *out3 = new VCheckBox("");
+    VCheckBox *outC = new VCheckBox("");
+    VCheckBox *outR = new VCheckBox("");
 
     out1->setProperty("index",QVariant::fromValue(Controles::OUTPUT_1));
     out2->setProperty("index",QVariant::fromValue(Controles::OUTPUT_2));
@@ -185,11 +197,11 @@ QList<QWidget*>* UIPerform::makePart(int part){
     QSpinBox *pitchOctaveShitf = new QSpinBox();
     QSpinBox *pitchCoarse = new QSpinBox();
     QSpinBox *pitchFine = new QSpinBox();
-    QComboBox *pitchMono = new QComboBox();
-    QComboBox *pitchLegato = new QComboBox();
-    QComboBox *pitchBend = new QComboBox();
-    QComboBox *pitchPortamento = new QComboBox();
-    QComboBox *pitchPortTime = new QComboBox();
+    VComboBox *pitchMono = new VComboBox();
+    VComboBox *pitchLegato = new VComboBox();
+    VComboBox *pitchBend = new VComboBox();
+    VComboBox *pitchPortamento = new VComboBox();
+    VComboBox *pitchPortTime = new VComboBox();
 
     pitchOctaveShitf->setRange(-3,3);
     pitchCoarse->setRange(-48,48);
@@ -230,12 +242,12 @@ QList<QWidget*>* UIPerform::makePart(int part){
      *  KBD (Zone) Tab
      ******************/
     QLabel *zoneLblPart = new QLabel(QString::number(part+1));
-    QPushButton *zoneSwitch = new QPushButton("ON/OFF");
-    QComboBox *zoneRangeLower = new QComboBox();
-    QComboBox *zoneRangeUpper = new QComboBox();
+    VPushButton *zoneSwitch = new VPushButton("ON/OFF");
+    VComboBox *zoneRangeLower = new VComboBox();
+    VComboBox *zoneRangeUpper = new VComboBox();
     //mistura o performance part aqui?
     QSpinBox *zoneVelocitySens = new QSpinBox();
-    QComboBox *zoneVoiceReserve = new QComboBox();
+    VComboBox *zoneVoiceReserve = new VComboBox();
     QSpinBox *zoneOctave = new QSpinBox();
 
     QString notas[] = {"C","C#","D","Eb","E","F","F#","G","G#","A","Bb","B"};
@@ -317,10 +329,10 @@ QList<QWidget*>* UIPerform::makePart(int part){
     QLabel *midifLblPart = new QLabel(QString::number(part+1));
     el->append(midifLblPart);
     for(int n=0; n<11; n++){
-        QCheckBox *chk = new QCheckBox();
+        VCheckBox *chk = new VCheckBox("");
         el->append(chk);
     }
-    QComboBox *midiVelocityCurve = new QComboBox();
+    VComboBox *midiVelocityCurve = new VComboBox();
 
     QPixmap pixmapCurve1(QString(":/icones/patchtone/tvf/v-curve-%1.png").arg(3));
     QPixmap pixmapCurve2(QString(":/icones/patchtone/tvf/v-curve-%1.png").arg(2));
@@ -346,4 +358,43 @@ QList<QWidget*>* UIPerform::makePart(int part){
 UIPerform::~UIPerform()
 {
     delete ui;
+}
+
+void UIPerform::enviar(){
+    QString msg = "";
+
+    // por part 1-16
+
+    /*
+     * Part 10 (index 9)
+     *  não tem Octave, enviar assim mesmo?
+     *  garantir apenas Patches de DRM
+     * */
+
+    int addr = 0x10000000;
+    int part = 0;
+
+    //Performance MIDI pg 31
+    /*
+     * super tipo de qwidget para cada tipo:
+     * tipo->setAddress()
+     * tipo->getVal()
+     *
+     * Interface
+     *   setAddr
+     *   addValueWithData   (prop ItemValue , testar se é tipo <Patch*> )
+     *   getAddr
+     *   getValue
+     *      se tem Data -> retornda
+     *      se tem Patch retorna o valor
+     *      se não tem nada retorna currentIndex
+     *
+     * QList que implemente ordenar por getAddr
+     * */
+
+    qDebug() << (qobject_cast<VCheckBox*>(parts->at(part)->at(RXCH)) == NULL);
+    qDebug() << (qobject_cast<VCheckBox*>(parts->at(part)->at(RXSW)) == NULL);
+//    msg += Midi::makeMsg(addr + 0x0000, ((VComboBox*)parts->at(part)->at(RXCH))->currentIndex() -1);
+//    msg += Midi::makeMsg(addr + 0x0001, ((VCheckBox*)parts->at(part)->at(RXSW))->isChecked()? 1 : 0 );
+
 }

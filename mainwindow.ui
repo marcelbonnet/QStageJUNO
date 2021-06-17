@@ -56,7 +56,13 @@
    <attribute name="toolBarBreak">
     <bool>false</bool>
    </attribute>
+   <addaction name="actionEnviar"/>
   </widget>
+  <action name="actionEnviar">
+   <property name="text">
+    <string>Enviar</string>
+   </property>
+  </action>
  </widget>
  <resources/>
  <connections/>

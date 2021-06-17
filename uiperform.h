@@ -4,13 +4,13 @@
 #include <QWidget>
 #include <QList>
 #include <QLabel>
-#include <QComboBox>
-#include <QCheckBox>
-#include <QPushButton>
-#include <QSpinBox>
+#include "vcombobox.h"
+#include "vcheckbox.h"
+#include "vpushbutton.h"
+#include "vspinbox.h"
 #include <QLineEdit>
 #include <QMetaType>
-
+#include "patch.h"
 
 namespace Ui {
 class UIPerform;
@@ -106,30 +106,8 @@ public:
         MIDI_VELOCITY_CURVE
     };
 
-    //INDEX dos objetos casos eles precisem ser mudados de lugar na UI
-    // PATCH E LEVEL/CHANNEL TABS
-//    static const int KBD = 0;
-//    static const int GROUP = 1;
-//    static const int PATCH = 2;
-//    static const int SOLO = 3;
-//    static const int MUTE = 4;
-//    static const int LEVEL = 5;
-//    static const int PAN = 6;
-//    static const int RXCH = 7;
-//    static const int RXSW = 8;
-//    // OUTPUT TAB
-//    static const int OUTPUT = 9;
-//    static const int OUTPUT_MFX_SELECTION = 10;
-//    static const int OUTPUT_LEVEL = 11;
-//    static const int OUTPUT_CHORUS = 12;
-//    static const int OUTPUT_REVERB = 13;
-//    static const int OUTPUT_1 = 14;
-//    static const int OUTPUT_2 = 15;
-//    static const int OUTPUT_3 = 16;
-//    static const int OUTPUT_C = 17;
-//    static const int OUTPUT_R = 18;
-
     void setSlotConnections(bool b);
+    void enviar();
 
 private slots:
     void onChangeOutput123CR(int);

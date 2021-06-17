@@ -20,7 +20,7 @@ MainWindow::MainWindow(QWidget *parent)
     QTabBar* tabBar = tab->tabBar();
     tabBar->setTabButton(0, QTabBar::LeftSide, new QLabel("Set List"));
 
-    UIPerform *perform = new UIPerform();
+    perform = new UIPerform();
 
     tab->addTab(perform, "");
     tab->addTab(new QLabel("teste"), "");
@@ -35,3 +35,8 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
+
+void MainWindow::on_actionEnviar_triggered()
+{
+    perform->enviar();
+}
