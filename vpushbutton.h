@@ -1,5 +1,5 @@
-#ifndef VCHECKBOX_H
-#define VCHECKBOX_H
+#ifndef VPUSHBUTTON_H
+#define VPUSHBUTTON_H
 
 #include "value.h"
 #include <QPushButton>
@@ -14,4 +14,4 @@ public:
     virtual void addValueWithData(QString item, QVariant data) override;
 };
 
-#endif // VCHECKBOX_H
+#endif // VPUSHBUTTON_H

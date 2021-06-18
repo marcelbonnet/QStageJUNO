@@ -1,5 +1,5 @@
-#ifndef VCHECKBOX_H
-#define VCHECKBOX_H
+#ifndef VCOMBOBOX_H
+#define VCOMBOBOX_H
 
 #include "value.h"
 #include <QComboBox>
@@ -19,4 +19,4 @@ private:
     int offset;
 };
 
-#endif // VCHECKBOX_H
+#endif // VCOMBOBOX_H

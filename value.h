@@ -14,6 +14,17 @@ public:
     void setAddr(int addr);
     int getAddr();
 
+    static const int PERF_PART;
+    static const int PERF_COMMON ;
+    static const int PERF_COMMON_MFX1 ;
+    static const int PERF_COMMON_CHORUS ;
+    static const int PERF_COMMON_REVERB ;
+    static const int PERF_COMMON_MFX2 ;
+    static const int PERF_COMMON_MFX3 ;
+    static const int PERF_MIDI_CH ;
+    static const int PERF_ZONE_CH ;
+    static const int PERF_CTRL ;
+
 private:
     int address;
 

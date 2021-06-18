@@ -1,5 +1,5 @@
-#ifndef VCHECKBOX_H
-#define VCHECKBOX_H
+#ifndef VSPINBOX_H
+#define VSPINBOX_H
 
 #include "value.h"
 #include <QSpinBox>
@@ -19,4 +19,4 @@ private:
     int offset;
 };
 
-#endif // VCHECKBOX_H
+#endif // VSPINBOX_H
