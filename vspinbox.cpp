@@ -12,11 +12,12 @@ VSpinBox::VSpinBox(int offset, int min, int max) : QSpinBox()
     this->offset = offset;
 }
 
-VSpinBox::VSpinBox(int addr, int offset, int min, int max) : QSpinBox()
+VSpinBox::VSpinBox(int addr, int addrOffset, int offset, int min, int max) : QSpinBox()
 {
     setRange(min, max);
     this->offset = offset;
     setAddr(addr);
+    setAddrOffset(addrOffset);
 }
 
 int VSpinBox::getValue(){

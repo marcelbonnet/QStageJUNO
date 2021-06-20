@@ -4,6 +4,7 @@
 #include <QWidget>
 #include <QList>
 #include <QLabel>
+#include "value.h"
 #include "vcombobox.h"
 #include "vcheckbox.h"
 #include "vpushbutton.h"

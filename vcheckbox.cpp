@@ -6,9 +6,10 @@ VCheckBox::VCheckBox(QString label) : QCheckBox(label)
 
 }
 
-VCheckBox::VCheckBox(int addr, QString label) : QCheckBox(label)
+VCheckBox::VCheckBox(int addr, int addrOffset, QString label) : QCheckBox(label)
 {
     setAddr(addr);
+    setAddrOffset(addrOffset);
 }
 
 int VCheckBox::getValue(){

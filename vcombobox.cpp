@@ -5,10 +5,11 @@ VComboBox::VComboBox(int offset) : QComboBox()
     this->offset = offset;
 }
 
-VComboBox::VComboBox(int addr, int offset) : QComboBox()
+VComboBox::VComboBox(int addr, int addrOffset, int offset) : QComboBox()
 {
     this->offset = offset;
     setAddr(addr);
+    setAddrOffset(addrOffset);
 }
 
 int VComboBox::getValue(){

@@ -4,6 +4,7 @@
 #include <QGridLayout>
 #include <QDebug>
 #include "midi.h"
+#include <algorithm>
 
 UIPerform::UIPerform(QWidget *parent) :
     QWidget(parent),
@@ -100,14 +101,14 @@ QList<QWidget*>* UIPerform::makePart(int part){
     QList<QWidget*> *el = new QList<QWidget*>();
 
     QLabel *lblPart = new QLabel(QString::number(part+1));
-    VPushButton *kbd = new VPushButton(Value::PERF_ZONE_CH + 0x0001, "ON/OFF");
+    VPushButton *kbd = new VPushButton(Value::PERF_ZONE_CH , 0x0001, "ON/OFF");
     kbd->setCheckable(true);
 
     VComboBox *group = new VComboBox(0);
     for(int i=0; i<39; i++)
         group->addItem(Patch::CATEGORIES[i]);
 
-    VComboBox *patch = new VComboBox(Value::PERF_PART + 0x0004, 0);
+    VComboBox *patch = new VComboBox(Value::PERF_PART , 0x0004, 0);
     /*
      * 5	Pf:005	JUNO Piano 1	PNO	87	64	5	PRESET		PNO
 
@@ -119,14 +120,14 @@ QList<QWidget*>* UIPerform::makePart(int part){
     patch->addItem(p2->getPatchFullName(), QVariant::fromValue(p2));
     patch->addItem(p3->getPatchFullName(), QVariant::fromValue(p3));
 
-    VCheckBox *solo = new VCheckBox( -000000001 , ""); // FIXME o que é esse solo?
-    VCheckBox *mute = new VCheckBox(Value::PERF_PART + 0x001b, "");
-    VSpinBox *level = new VSpinBox(Value::PERF_PART + 0x0007, 0, 0, 127);
-    VSpinBox *pan = new VSpinBox(Value::PERF_PART + 0x0008, 0, 0, 127);
+    VCheckBox *solo = new VCheckBox( -000000001 ,0, ""); // FIXME o que é esse solo?
+    VCheckBox *mute = new VCheckBox(Value::PERF_PART , 0x001b, "");
+    VSpinBox *level = new VSpinBox(Value::PERF_PART , 0x0007, 0, 0, 127);
+    VSpinBox *pan = new VSpinBox(Value::PERF_PART , 0x0008, 0, 0, 127);
     pan->setValue(63);
-    VSpinBox *rxch = new VSpinBox(Value::PERF_PART + 0, 1, 1, 16);
+    VSpinBox *rxch = new VSpinBox(Value::PERF_PART , 0x00, 1, 1, 16);
     rxch->setValue(part+1);
-    VCheckBox *rxsw = new VCheckBox(Value::PERF_PART + 0x0001, "");
+    VCheckBox *rxsw = new VCheckBox(Value::PERF_PART , 0x0001, "");
     rxsw->setChecked(true);
 
     el->append(lblPart);
@@ -142,26 +143,26 @@ QList<QWidget*>* UIPerform::makePart(int part){
 
     // Output
     QLabel *outLblPart = new QLabel(QString::number(part+1));
-    VComboBox *out = new VComboBox(Value::PERF_PART + 0x001F, 0 );
+    VComboBox *out = new VComboBox(Value::PERF_PART , 0x001F, 0 );
     out->addValueWithData("MFX",0);
     out->addValueWithData("L+R Mono",1);
     out->addValueWithData("L",5);
     out->addValueWithData("R",6);
     out->addValueWithData("Patch",13);
 
-    VSpinBox *mfxSel = new VSpinBox(Value::PERF_PART + 0x0020, 1, 1, 3);
+    VSpinBox *mfxSel = new VSpinBox(Value::PERF_PART , 0x0020, 1, 1, 3);
 
-    VSpinBox *outLevel = new VSpinBox(Value::PERF_PART + 0x001C, 0, 0, 127);
-    VSpinBox *outChorus = new VSpinBox(Value::PERF_PART + 0x001D, 0, 0, 127);
-    VSpinBox *outReverb = new VSpinBox(Value::PERF_PART + 0x001E, 0, 0, 127);
+    VSpinBox *outLevel = new VSpinBox(Value::PERF_PART , 0x001C, 0, 0, 127);
+    VSpinBox *outChorus = new VSpinBox(Value::PERF_PART , 0x001D, 0, 0, 127);
+    VSpinBox *outReverb = new VSpinBox(Value::PERF_PART , 0x001E, 0, 0, 127);
 
     // preciso entender isso. Só sei que só pode ter um ativado por vez.
     // FIXME ver se é do Setup (pg.21) MFX1 Switch (0x000A até Reverb switch)
-    VCheckBox *out1 = new VCheckBox(0, "");
-    VCheckBox *out2 = new VCheckBox(0, "");
-    VCheckBox *out3 = new VCheckBox(0, "");
-    VCheckBox *outC = new VCheckBox(0, "");
-    VCheckBox *outR = new VCheckBox(0, "");
+    VCheckBox *out1 = new VCheckBox(0,0, "");
+    VCheckBox *out2 = new VCheckBox(0,0, "");
+    VCheckBox *out3 = new VCheckBox(0,0, "");
+    VCheckBox *outC = new VCheckBox(0,0, "");
+    VCheckBox *outR = new VCheckBox(0,0, "");
 
     out1->setProperty("index",QVariant::fromValue(Controles::OUTPUT_1));
     out2->setProperty("index",QVariant::fromValue(Controles::OUTPUT_2));
@@ -189,14 +190,14 @@ QList<QWidget*>* UIPerform::makePart(int part){
 
     //PITCH TAB
     QLabel *pitchLblPart = new QLabel(QString::number(part+1));
-    VSpinBox *pitchOctaveShitf = new VSpinBox(Value::PERF_PART + 0x0015, -64, -3, 3 ); //FIXME confirmar se é dessa página de endereços
-    VSpinBox *pitchCoarse = new VSpinBox(Value::PERF_PART + 0x0009, -64, -48, 48 );
-    VSpinBox *pitchFine = new VSpinBox(Value::PERF_PART + 0x000A, -64, -50, 50 );
-    VComboBox *pitchMono = new VComboBox(Value::PERF_PART + 0x000B, 0 );
-    VComboBox *pitchLegato = new VComboBox(Value::PERF_PART + 0x000C, 0);
-    VComboBox *pitchBend = new VComboBox(Value::PERF_PART + 0x000D, 0);
-    VComboBox *pitchPortamento = new VComboBox(Value::PERF_PART + 0x000E, 0);
-    VComboBox *pitchPortTime = new VComboBox(Value::PERF_PART + 0x000F, 0);
+    VSpinBox *pitchOctaveShitf = new VSpinBox(Value::PERF_PART , 0x0015, -64, -3, 3 ); //FIXME confirmar se é dessa página de endereços
+    VSpinBox *pitchCoarse = new VSpinBox(Value::PERF_PART , 0x0009, -64, -48, 48 );
+    VSpinBox *pitchFine = new VSpinBox(Value::PERF_PART , 0x000A, -64, -50, 50 );
+    VComboBox *pitchMono = new VComboBox(Value::PERF_PART , 0x000B, 0 );
+    VComboBox *pitchLegato = new VComboBox(Value::PERF_PART , 0x000C, 0);
+    VComboBox *pitchBend = new VComboBox(Value::PERF_PART , 0x000D, 0);
+    VComboBox *pitchPortamento = new VComboBox(Value::PERF_PART , 0x000E, 0);
+    VComboBox *pitchPortTime = new VComboBox(Value::PERF_PART , 0x000F, 0);
 
 
     pitchMono->addItem("MONO");
@@ -234,13 +235,13 @@ QList<QWidget*>* UIPerform::makePart(int part){
      *  KBD (Zone) Tab
      ******************/
     QLabel *zoneLblPart = new QLabel(QString::number(part+1));
-    VPushButton *zoneSwitch = new VPushButton(-00000000000001, "ON/OFF");//FIXME é o mesmo botão da primeira aba
-    VComboBox *zoneRangeLower = new VComboBox(Value::PERF_ZONE_CH + 0x000C, 0);
-    VComboBox *zoneRangeUpper = new VComboBox(Value::PERF_ZONE_CH + 0x000D, 0);
+    VPushButton *zoneSwitch = new VPushButton(-00000000000001, 0, "ON/OFF");//FIXME é o mesmo botão da primeira aba
+    VComboBox *zoneRangeLower = new VComboBox(Value::PERF_ZONE_CH , 0x000C, 0);
+    VComboBox *zoneRangeUpper = new VComboBox(Value::PERF_ZONE_CH , 0x000D, 0);
     //mistura o performance part aqui?
-    VSpinBox *zoneVelocitySens = new VSpinBox(Value::PERF_PART + 0x0016, -64, -63, 63);
-    VComboBox *zoneVoiceReserve = new VComboBox(Value::PERF_COMMON + 0x0010, 0); //FIXME é do Performance Common, mesmo?
-    VSpinBox *zoneOctave = new VSpinBox(Value::PERF_ZONE_CH + 0x0000, -64, -3, 3);
+    VSpinBox *zoneVelocitySens = new VSpinBox(Value::PERF_PART , 0x0016, -64, -63, 63);
+    VComboBox *zoneVoiceReserve = new VComboBox(Value::PERF_COMMON , 0x0010, 0); //FIXME é do Performance Common, mesmo?
+    VSpinBox *zoneOctave = new VSpinBox(Value::PERF_ZONE_CH , 0x0000, -64, -3, 3);
 
     QString notas[] = {"C","C#","D","Eb","E","F","F#","G","G#","A","Bb","B"};
 
@@ -273,14 +274,14 @@ QList<QWidget*>* UIPerform::makePart(int part){
      * OFFSET + VIBRATO TAB
      * ***********************/
     QLabel *offLblPart = new QLabel(QString::number(part+1));
-    VSpinBox *offsetCut = new VSpinBox(Value::PERF_PART + 0x0011, -64, -64, 63);
-    VSpinBox *offsetReso = new VSpinBox(Value::PERF_PART + 0x0012, -64, -64, 63);
-    VSpinBox *offsetAttack = new VSpinBox(Value::PERF_PART + 0x0013, -64, -64, 63);
-    VSpinBox *offsetDecay = new VSpinBox(Value::PERF_PART + 0x0021, -64, -64, 63);
-    VSpinBox *offsetRelease = new VSpinBox(Value::PERF_PART + 0x0014, -64, -64, 63);
-    VSpinBox *vibratoRate = new VSpinBox(Value::PERF_PART + 0x0022, -64, -64, 63);
-    VSpinBox *vibratoDepth = new VSpinBox(Value::PERF_PART + 0x0023, -64, -64, 63);
-    VSpinBox *vibratoDelay = new VSpinBox(Value::PERF_PART + 0x0024, -64, -64, 63);
+    VSpinBox *offsetCut = new VSpinBox(Value::PERF_PART , 0x0011, -64, -64, 63);
+    VSpinBox *offsetReso = new VSpinBox(Value::PERF_PART , 0x0012, -64, -64, 63);
+    VSpinBox *offsetAttack = new VSpinBox(Value::PERF_PART , 0x0013, -64, -64, 63);
+    VSpinBox *offsetDecay = new VSpinBox(Value::PERF_PART , 0x0021, -64, -64, 63);
+    VSpinBox *offsetRelease = new VSpinBox(Value::PERF_PART , 0x0014, -64, -64, 63);
+    VSpinBox *vibratoRate = new VSpinBox(Value::PERF_PART , 0x0022, -64, -64, 63);
+    VSpinBox *vibratoDepth = new VSpinBox(Value::PERF_PART , 0x0023, -64, -64, 63);
+    VSpinBox *vibratoDelay = new VSpinBox(Value::PERF_PART , 0x0024, -64, -64, 63);
 
     el->append(offLblPart);
     el->append(offsetCut);
@@ -299,7 +300,7 @@ QList<QWidget*>* UIPerform::makePart(int part){
     QLabel *scalefLblPart = new QLabel(QString::number(part+1));
     el->append(scalefLblPart);
     for(int n=0; n<12; n++){
-        VSpinBox *scale = new VSpinBox(Value::PERF_PART + 0x0025 + n, -64, -64, 63);
+        VSpinBox *scale = new VSpinBox(Value::PERF_PART , 0x0025 + n, -64, -64, 63);
         el->append(scale);
     }
 
@@ -309,10 +310,10 @@ QList<QWidget*>* UIPerform::makePart(int part){
     QLabel *midifLblPart = new QLabel(QString::number(part+1));
     el->append(midifLblPart);
     for(int n=0; n<11; n++){
-        VCheckBox *chk = new VCheckBox(Value::PERF_MIDI_CH + 0x0000 + n , "");
+        VCheckBox *chk = new VCheckBox(Value::PERF_MIDI_CH , 0x0000 + n , "");
         el->append(chk);
     }
-    VComboBox *midiVelocityCurve = new VComboBox(Value::PERF_MIDI_CH + 0x000B, 0);
+    VComboBox *midiVelocityCurve = new VComboBox(Value::PERF_MIDI_CH , 0x000B, 0);
 
     QPixmap pixmapCurve1(QString(":/icones/patchtone/tvf/v-curve-%1.png").arg(3));
     QPixmap pixmapCurve2(QString(":/icones/patchtone/tvf/v-curve-%1.png").arg(2));
@@ -341,40 +342,49 @@ UIPerform::~UIPerform()
 }
 
 void UIPerform::enviar(){
-    QString msg = "";
+//    QString msg = "";
 
-    // por part 1-16
+//    // por part 1-16
 
-    /*
-     * Part 10 (index 9)
-     *  não tem Octave, enviar assim mesmo?
-     *  garantir apenas Patches de DRM
-     * */
+//    /*
+//     * Part 10 (index 9)
+//     *  não tem Octave, enviar assim mesmo?
+//     *  garantir apenas Patches de DRM
+//     * */
 
-    int addr = 0x10000000;
-    int part = 0;
+//    int addr = 0x10000000;
+//    int part = 0;
 
-    //Performance MIDI pg 31
-    /*
-     * super tipo de qwidget para cada tipo:
-     * tipo->setAddress()
-     * tipo->getVal()
-     *
-     * Interface
-     *   setAddr
-     *   addValueWithData   (prop ItemValue , testar se é tipo <Patch*> )
-     *   getAddr
-     *   getValue
-     *      se tem Data -> retornda
-     *      se tem Patch retorna o valor
-     *      se não tem nada retorna currentIndex
-     *
-     * QList que implemente ordenar por getAddr
-     * */
+//    //Performance MIDI pg 31
+//    /*
+//     * super tipo de qwidget para cada tipo:
+//     * tipo->setAddress()
+//     * tipo->getVal()
+//     *
+//     * Interface
+//     *   setAddr
+//     *   addValueWithData   (prop ItemValue , testar se é tipo <Patch*> )
+//     *   getAddr
+//     *   getValue
+//     *      se tem Data -> retornda
+//     *      se tem Patch retorna o valor
+//     *      se não tem nada retorna currentIndex
+//     *
+//     * QList que implemente ordenar por getAddr
+//     * */
 
-    qDebug() << (qobject_cast<VCheckBox*>(parts->at(part)->at(RXCH)) == NULL);
-    qDebug() << (qobject_cast<VCheckBox*>(parts->at(part)->at(RXSW)) == NULL);
-//    msg += Midi::makeMsg(addr + 0x0000, ((VComboBox*)parts->at(part)->at(RXCH))->currentIndex() -1);
-//    msg += Midi::makeMsg(addr + 0x0001, ((VCheckBox*)parts->at(part)->at(RXSW))->isChecked()? 1 : 0 );
+//    qDebug() << (qobject_cast<VCheckBox*>(parts->at(part)->at(RXCH)) == NULL);
+//    qDebug() << (qobject_cast<VCheckBox*>(parts->at(part)->at(RXSW)) == NULL);
+//    msg += Midi::makeMsg(addr , 0x0000, ((VComboBox*)parts->at(part)->at(RXCH))->currentIndex() -1);
+//    msg += Midi::makeMsg(addr , 0x0001, ((VCheckBox*)parts->at(part)->at(RXSW))->isChecked()? 1 : 0 );
+
+    QList<QWidget*> *part = parts->at(0);
+
+
+    std::sort(part->begin(), part->end());
+    qDebug() << "====================== ORDENADA ===============";
+    for(int i=0; i<part->count(); i++) {
+        //qDebug() << part->at(i)
+    }
 
 }

@@ -6,9 +6,10 @@ VPushButton::VPushButton(QString label) : QPushButton(label)
 
 }
 
-VPushButton::VPushButton(int addr, QString label) : QPushButton(label)
+VPushButton::VPushButton(int addr, int addrOffset, QString label) : QPushButton(label)
 {
     setAddr(addr);
+    setAddrOffset(addrOffset);
 }
 
 int VPushButton::getValue(){

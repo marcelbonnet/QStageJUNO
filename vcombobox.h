@@ -10,7 +10,7 @@ class VComboBox : public QComboBox, public Value
     Q_OBJECT;
 public:
     VComboBox(int offset);
-    VComboBox(int addr, int offset);
+    VComboBox(int addr, int addrOffset, int offset);
     virtual int getValue() override;
     virtual void addValueWithData(QString item, QVariant data) override;
     Patch* getPatch();

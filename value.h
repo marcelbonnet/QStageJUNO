@@ -13,6 +13,8 @@ public:
 
     void setAddr(int addr);
     int getAddr();
+    void setAddrOffset(int offset);
+    int getAddrOffset();
 
     static const int PERF_PART;
     static const int PERF_COMMON ;
@@ -25,8 +27,12 @@ public:
     static const int PERF_ZONE_CH ;
     static const int PERF_CTRL ;
 
+    // https://www.tutorialspoint.com/cplusplus/cpp_overloading.htm
+    bool operator<(const Value &v);
+
 private:
     int address;
+    int addressOffset;
 
 };
 

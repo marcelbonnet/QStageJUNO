@@ -24,3 +24,15 @@ void Value::setAddr(int addr){
 int Value::getAddr(){
     return this->address;
 }
+
+void Value::setAddrOffset(int offset){
+    this->addressOffset = offset;
+}
+
+int Value::getAddrOffset(){
+    return this->addressOffset;
+}
+
+bool Value::operator<(const Value &v){
+    return (this->getAddr() + this->getAddrOffset()) < (v.address + v.addressOffset);
+}
