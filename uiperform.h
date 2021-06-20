@@ -110,14 +110,17 @@ public:
     void setSlotConnections(bool b);
     void enviar();
 
+    bool static valueLessThan(Value *v1, Value *v2);
+
 private slots:
     void onChangeOutput123CR(int);
 
 private:
     Ui::UIPerform *ui;
     QList<QList<QWidget*>*> *parts;
+    QList<QList<Value*>*> *partsValue;
 
-    QList<QWidget *> *makePart(int part);
+    void makePart(int part);
 
 
 };

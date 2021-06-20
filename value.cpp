@@ -34,5 +34,7 @@ int Value::getAddrOffset(){
 }
 
 bool Value::operator<(const Value &v){
+    if ((this->getAddr() + this->getAddrOffset()) < 0) return false;
+    if ((v.address + v.addressOffset) < 0) return true;
     return (this->getAddr() + this->getAddrOffset()) < (v.address + v.addressOffset);
 }
